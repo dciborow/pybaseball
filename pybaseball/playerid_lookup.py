@@ -44,9 +44,7 @@ def chadwick_register(save: bool = False) -> pd.DataFrame:
     ''' Get the Chadwick register Database '''
 
     if os.path.exists(get_register_file()):
-        table = pd.read_csv(get_register_file())
-        return table
-
+        return pd.read_csv(get_register_file())
     print('Gathering player lookup table. This may take a moment.')
     s = requests.get(url).content
     mlb_only_cols = ['key_retro', 'key_bbref', 'key_fangraphs', 'mlb_played_first', 'mlb_played_last']

@@ -33,12 +33,12 @@ def team_fielding_bref(team: str, start_season: int, end_season: Optional[int]=N
     if end_season is None:
         end_season = start_season
 
-    url = "https://www.baseball-reference.com/teams/{}".format(team)
+    url = f"https://www.baseball-reference.com/teams/{team}"
 
     raw_data = []
     headings: Optional[List[str]] = None
     for season in range(start_season, end_season+1):
-        stats_url = "{}/{}-fielding.shtml".format(url, season)
+        stats_url = f"{url}/{season}-fielding.shtml"
         response = session.get(stats_url)
         soup = BeautifulSoup(response.content, 'html.parser')
 

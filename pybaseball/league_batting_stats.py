@@ -17,7 +17,7 @@ def get_soup(start_dt: date, end_dt: date) -> BeautifulSoup:
     # if((start_dt is None) or (end_dt is None)):
     #    print('Error: a date range needs to be specified')
     #    return None
-    url = "http://www.baseball-reference.com/leagues/daily.cgi?user_team=&bust_cache=&type=b&lastndays=7&dates=fromandto&fromandto={}.{}&level=mlb&franch=&stat=&stat_value=0".format(start_dt, end_dt)
+    url = f"http://www.baseball-reference.com/leagues/daily.cgi?user_team=&bust_cache=&type=b&lastndays=7&dates=fromandto&fromandto={start_dt}.{end_dt}&level=mlb&franch=&stat=&stat_value=0"
     s = session.get(url).content
     # a workaround to avoid beautiful soup applying the wrong encoding
     s = str(s).encode()
@@ -26,10 +26,9 @@ def get_soup(start_dt: date, end_dt: date) -> BeautifulSoup:
 
 def get_table(soup: BeautifulSoup) -> pd.DataFrame:
     table = soup.find_all('table')[0]
-    data = []
     headings = [th.get_text() for th in table.find("tr").find_all("th")][1:]
     headings.append("mlbID")
-    data.append(headings)
+    data = [headings]
     table_body = table.find('tbody')
     rows = table_body.find_all('tr')
     for row in rows:
@@ -38,7 +37,7 @@ def get_table(soup: BeautifulSoup) -> pd.DataFrame:
         mlbid = row_anchor["href"].split("mlb_ID=")[-1] if row_anchor else pd.NA  # ID str or nan
         cols = [ele.text.strip() for ele in cols]
         cols.append(mlbid)
-        data.append([ele for ele in cols])
+        data.append(list(cols))
     df = pd.DataFrame(data)
     df = df.rename(columns=df.iloc[0])
     df = df.reindex(df.index.drop(0))
@@ -97,8 +96,7 @@ def bwar_bat(return_all: bool = False) -> pd.DataFrame:
     c=pd.read_csv(io.StringIO(s.decode('utf-8')))
     if return_all:
         return c
-    else:
-        cols_to_keep = ['name_common', 'mlb_ID', 'player_ID', 'year_ID', 'team_ID', 'stint_ID', 'lg_ID',
-                        'pitcher','G', 'PA', 'salary', 'runs_above_avg', 'runs_above_avg_off','runs_above_avg_def',
-                        'WAR_rep','WAA','WAR']
-        return c[cols_to_keep]
+    cols_to_keep = ['name_common', 'mlb_ID', 'player_ID', 'year_ID', 'team_ID', 'stint_ID', 'lg_ID',
+                    'pitcher','G', 'PA', 'salary', 'runs_above_avg', 'runs_above_avg_off','runs_above_avg_def',
+                    'WAR_rep','WAA','WAR']
+    return c[cols_to_keep]

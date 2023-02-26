@@ -18,7 +18,7 @@ def get_soup(start_dt: Optional[Union[date, str]], end_dt: Optional[Union[date, 
     if((start_dt is None) or (end_dt is None)):
         print('Error: a date range needs to be specified')
         return None
-    url = "http://www.baseball-reference.com/leagues/daily.cgi?user_team=&bust_cache=&type=p&lastndays=7&dates=fromandto&fromandto={}.{}&level=mlb&franch=&stat=&stat_value=0".format(start_dt, end_dt)
+    url = f"http://www.baseball-reference.com/leagues/daily.cgi?user_team=&bust_cache=&type=p&lastndays=7&dates=fromandto&fromandto={start_dt}.{end_dt}&level=mlb&franch=&stat=&stat_value=0"
     s = session.get(url).content
     # a workaround to avoid beautiful soup applying the wrong encoding
     s = str(s).encode()
@@ -27,10 +27,9 @@ def get_soup(start_dt: Optional[Union[date, str]], end_dt: Optional[Union[date, 
 
 def get_table(soup: BeautifulSoup) -> pd.DataFrame:
     table = soup.find_all('table')[0]
-    raw_data = []
     headings = [th.get_text() for th in table.find("tr").find_all("th")][1:]
     headings.append("mlbID")
-    raw_data.append(headings)
+    raw_data = [headings]
     table_body = table.find('tbody')
     rows = table_body.find_all('tr')
     for row in rows:
@@ -39,7 +38,7 @@ def get_table(soup: BeautifulSoup) -> pd.DataFrame:
         mlbid = row_anchor["href"].split("mlb_ID=")[-1] if row_anchor else pd.NA  # ID str or nan
         cols = [ele.text.strip() for ele in cols]
         cols.append(mlbid)
-        raw_data.append([ele for ele in cols])
+        raw_data.append(list(cols))
     data = pd.DataFrame(raw_data)
     data = data.rename(columns=data.iloc[0])
     data = data.reindex(data.index.drop(0))
@@ -86,8 +85,8 @@ def pitching_stats_bref(season: Optional[int]=None) -> pd.DataFrame:
     if season is None:
         season = most_recent_season()
     str_season = str(season)
-    start_dt = str_season + '-03-01' #opening day is always late march or early april
-    end_dt = str_season + '-11-30' #postseason is definitely over by end of November
+    start_dt = f'{str_season}-03-01'
+    end_dt = f'{str_season}-11-30'
     return(pitching_stats_range(start_dt, end_dt))
 
 
@@ -101,8 +100,7 @@ def bwar_pitch(return_all: bool=False) -> pd.DataFrame:
     c = pd.read_csv(io.StringIO(s.decode('utf-8')))
     if return_all:
         return c
-    else:
-        cols_to_keep = ['name_common', 'mlb_ID', 'player_ID', 'year_ID', 'team_ID', 'stint_ID', 'lg_ID',
-                        'G', 'GS', 'RA','xRA', 'BIP', 'BIP_perc','salary', 'ERA_plus', 'WAR_rep', 'WAA',
-                        'WAA_adj','WAR']
-        return c[cols_to_keep]
+    cols_to_keep = ['name_common', 'mlb_ID', 'player_ID', 'year_ID', 'team_ID', 'stint_ID', 'lg_ID',
+                    'G', 'GS', 'RA','xRA', 'BIP', 'BIP_perc','salary', 'ERA_plus', 'WAR_rep', 'WAA',
+                    'WAA_adj','WAR']
+    return c[cols_to_keep]

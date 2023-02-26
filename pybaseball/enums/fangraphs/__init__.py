@@ -32,6 +32,4 @@ def stat_list_from_str(stat_category: FangraphsStatsCategory, values: Union[str,
     if 'ALL' in values:
         return obj_type.ALL()
 
-    stat_list = [obj_type.parse(x) for x in values]
-    
-    return stat_list
+    return [obj_type.parse(x) for x in values]

@@ -20,14 +20,10 @@ def get_division_counts_by_season(season: Optional[int]) -> int:
 
     if season >= 1994:
         return 6
-    if season >= 1969:
-        return 4
-    return 1
+    return 4 if season >= 1969 else 1
 
 class TestBRefStandings:
-    @pytest.mark.parametrize(
-        "season", [(x) for x in range(1876, most_recent_season())]
-    )
+    @pytest.mark.parametrize("season", list(range(1876, most_recent_season())))
     def test_standings(self, season: Optional[int]) -> None:
         standings_list = standings(season)
 

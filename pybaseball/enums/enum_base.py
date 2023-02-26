@@ -5,36 +5,36 @@ _T = TypeVar('_T')
 
 class EnumBase(Enum):
     @classmethod
-    def values(enum_class: Type[_T]) -> Any:
+    def values(cls) -> Any:
         return [x.value for x in enum_class] # type: ignore
     
     @classmethod
-    def parse(enum_class: Type[_T], value: str) -> _T:
-        parsed: Optional[_T] = enum_class.safe_parse(value) # type: ignore
+    def parse(cls, value: str) -> _T:
+        parsed: Optional[_T] = cls.safe_parse(value)
 
         if parsed is None:
-            raise ValueError(f"Invalid value of '{value}'. Values must be a valid member of the enum: {enum_class.__name__}")
+            raise ValueError(
+                f"Invalid value of '{value}'. Values must be a valid member of the enum: {cls.__name__}"
+            )
 
         return parsed
 
     @classmethod
-    def safe_parse(enum_class: Type[_T], value: str) -> Optional[_T]:
+    def safe_parse(cls, value: str) -> Optional[_T]:
         try:
-            return enum_class[value] # type: ignore
+            return cls[value]
         except KeyError:
             pass
 
-        parsed: Optional[_T] = enum_class.safe_parse_by_value(value) # type: ignore
+        parsed: Optional[_T] = cls.safe_parse_by_value(value)
 
         return parsed
     
     @classmethod
-    def safe_parse_by_value(enum_class: Type[_T], value: Any) -> Optional[_T]:
-        values = enum_class.values() # type: ignore
+    def safe_parse_by_value(cls, value: Any) -> Optional[_T]:
+        values = cls.values()
 
-        matched = [x for x in values if str(x).upper() == str(value).upper()]
-
-        if matched:
-            return enum_class(matched[0]) # type: ignore
+        if matched := [x for x in values if str(x).upper() == str(value).upper()]:
+            return cls(matched[0])
 
         return None

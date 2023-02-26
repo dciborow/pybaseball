@@ -10,9 +10,7 @@ from _pytest.monkeypatch import MonkeyPatch
 import pybaseball
 
 
-@pytest.mark.parametrize(
-    "cache_type", [(x) for x in ['CSV', 'PARQUET']]
-)
+@pytest.mark.parametrize("cache_type", ['CSV', 'PARQUET'])
 @patch('pybaseball.cache.config.enabled', True)
 def test_cache(monkeypatch: MonkeyPatch, cache_type: str, thrower: Callable) -> None:
     with patch('pybaseball.cache.config.cache_type', cache_type):

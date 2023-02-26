@@ -133,7 +133,7 @@ def events(season, type='regular', export_dir='.'):
                 subsubtree = t
 
         event_files = [t.path for t in repo.get_git_tree(subsubtree.sha).tree if str(season) in t.path]
-        if len(event_files) == 0:
+        if not event_files:
             raise ValueError(f'Event files not available for {season}')
     except RateLimitExceededException:
         warnings.warn(
@@ -162,7 +162,7 @@ def rosters(season):
                 subtree = t
 
         rosters = [t.path for t in repo.get_git_tree(subtree.sha).tree if str(season) in t.path]
-        if len(rosters) == 0:
+        if not rosters:
             raise ValueError(f'Rosters not available for {season}')
     except RateLimitExceededException:
         warnings.warn(

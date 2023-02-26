@@ -37,7 +37,9 @@ def try_parse_dataframe(
         ).convert_dtypes(convert_string=False)
 
     string_columns = [
-        dtype_tuple[0] for dtype_tuple in data_copy.dtypes.items() if str(dtype_tuple[1]) in ["object", "string"]
+        dtype_tuple[0]
+        for dtype_tuple in data_copy.dtypes.items()
+        if str(dtype_tuple[1]) in {"object", "string"}
     ]
     for column in string_columns:
         # Only check the first value of the column and test that;
@@ -90,17 +92,17 @@ def try_parse(
 
     # Is it an float or an int (including percetages)?
     try:
-        percentage = (
-            value.endswith('%') or column_name.endswith('%') or \
-            (known_percentages is not None and  column_name in known_percentages)
-        )
-        if percentage:
+        if percentage := (
+            value.endswith('%')
+            or column_name.endswith('%')
+            or (
+                known_percentages is not None
+                and column_name in known_percentages
+            )
+        ):
             return try_parse_percentage(value)
 
-        if '.' in value:
-            return float(value)
-
-        return int(value)
+        return float(value) if '.' in value else int(value)
     except:  # pylint: disable=bare-except
         pass
 
@@ -141,10 +143,6 @@ def convert_percentages(data: pd.DataFrame, columns: List[str]) -> pd.DataFrame:
         if col in data.columns and data[col].count() > 0:
             data[col] = data[col].str.strip(' %')
             data[col] = data[col].astype(float) / 100.0
-        else:
-            # print(col)
-            pass
-
     return data
 
 

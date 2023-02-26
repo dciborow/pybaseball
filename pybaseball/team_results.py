@@ -18,7 +18,7 @@ def get_soup(season: Optional[int], team: str) -> BeautifulSoup:
     # get most recent year's schedule if year not specified
     if season is None:
         season = most_recent_season()
-    url = "http://www.baseball-reference.com/teams/{}/{}-schedule-scores.shtml".format(team, season)
+    url = f"http://www.baseball-reference.com/teams/{team}/{season}-schedule-scores.shtml"
     print(url)
     s = session.get(url).content
     return BeautifulSoup(s, "lxml")
@@ -28,11 +28,10 @@ def get_table(soup: BeautifulSoup, team: str) -> pd.DataFrame:
         table = soup.find_all('table')[0]
     except:
         raise ValueError("Data cannot be retrieved for this team/year combo. Please verify that your team abbreviation is accurate and that the team existed during the season you are searching for.")
-    data = []
     headings = [th.get_text() for th in table.find("tr").find_all("th")]
     headings = headings[1:] # the "gm#" heading doesn't have a <td> element
     headings[3] = "Home_Away"
-    data.append(headings)
+    data = [headings]
     table_body = table.find('tbody')
     rows = table_body.find_all('tr')
     for row_index in range(len(rows) - 1): #last row is a description of column meanings
@@ -63,9 +62,9 @@ def get_table(soup: BeautifulSoup, team: str) -> pd.DataFrame:
             data.append([ele for ele in cols if ele])
         except:
             # two cases will break the above: games that haven't happened yet, and BR's redundant mid-table headers
-            # if future games, grab the scheduling info. Otherwise do nothing. 
+            # if future games, grab the scheduling info. Otherwise do nothing.
             if len(cols) > 1:
-                cols = [ele.text.strip() for ele in cols][0:5]
+                cols = [ele.text.strip() for ele in cols][:5]
                 data.append([ele for ele in cols if ele])
     #convert to pandas dataframe. make first row the table's column names and reindex.
     df = pd.DataFrame(data)

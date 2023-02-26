@@ -20,10 +20,7 @@ def _logging_side_effect() -> Callable:
         def _side_effect(*args: Any, **kwargs: Any) -> Optional[Any]:
             logger = logging.getLogger('pybaseball')
             logger.debug(f'Mock {name} => {args} {kwargs}')
-            if after is not None:
-                return after(*args, **kwargs)
-
-            return None
+            return after(*args, **kwargs) if after is not None else None
 
         return _side_effect
 

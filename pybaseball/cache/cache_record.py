@@ -63,7 +63,7 @@ class CacheRecord:
 
     def supports(self, function_data: Dict) -> bool:
         ''' Check if this record matches the function data '''
-        for key in ('func', 'args', 'kwargs'):
-            if self.data.get(key) != function_data.get(key):
-                return False
-        return True
+        return all(
+            self.data.get(key) == function_data.get(key)
+            for key in ('func', 'args', 'kwargs')
+        )

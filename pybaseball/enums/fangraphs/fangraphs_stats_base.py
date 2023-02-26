@@ -11,9 +11,9 @@ class FangraphsStatsBase(EnumBase):
             return int(x.value) if x.value.isdigit() else -2
 
         common_columns = ['c'] + cls.__COMMON_COLUMNS__
-        column_list = list(set(
-            [column for column in cls if column.value not in common_columns]
-        ))
+        column_list = list(
+            {column for column in cls if column.value not in common_columns}
+        )
         # Order the columns numerically, except for 'c' which always goes first
         column_list.sort(key=_sort_key)
         prepend = []

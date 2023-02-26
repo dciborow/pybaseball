@@ -31,7 +31,9 @@ class GetDataFrameCallable(Protocol):
 # Autouse to prevent integration tests sneaking into the unit tests
 @pytest.fixture(autouse=True)
 def _requests_prevent_delete(monkeypatch: MonkeyPatch, thrower: Callable, logging_side_effect: Callable) -> MagicMock:
-    mock = MagicMock(side_effect=logging_side_effect(f'requests.delete', after=thrower))
+    mock = MagicMock(
+        side_effect=logging_side_effect('requests.delete', after=thrower)
+    )
     monkeypatch.setattr(requests, 'delete', mock)
     return mock
 
@@ -39,7 +41,9 @@ def _requests_prevent_delete(monkeypatch: MonkeyPatch, thrower: Callable, loggin
 # Autouse to prevent integration tests sneaking into the unit tests
 @pytest.fixture(autouse=True)
 def _requests_prevent_get(monkeypatch: MonkeyPatch, thrower: Callable, logging_side_effect: Callable) -> MagicMock:
-    mock = MagicMock(side_effect=logging_side_effect(f'requests.get', after=thrower))
+    mock = MagicMock(
+        side_effect=logging_side_effect('requests.get', after=thrower)
+    )
     monkeypatch.setattr(requests, 'get', mock)
     return mock
 
@@ -47,7 +51,9 @@ def _requests_prevent_get(monkeypatch: MonkeyPatch, thrower: Callable, logging_s
 # Autouse to prevent integration tests sneaking into the unit tests
 @pytest.fixture(autouse=True)
 def _requests_prevent_head(monkeypatch: MonkeyPatch, thrower: Callable, logging_side_effect: Callable) -> MagicMock:
-    mock = MagicMock(side_effect=logging_side_effect(f'requests.head', after=thrower))
+    mock = MagicMock(
+        side_effect=logging_side_effect('requests.head', after=thrower)
+    )
     monkeypatch.setattr(requests, 'head', mock)
     return mock
 
@@ -55,7 +61,9 @@ def _requests_prevent_head(monkeypatch: MonkeyPatch, thrower: Callable, logging_
 # Autouse to prevent integration tests sneaking into the unit tests
 @pytest.fixture(autouse=True)
 def _requests_prevent_options(monkeypatch: MonkeyPatch, thrower: Callable, logging_side_effect: Callable) -> MagicMock:
-    mock = MagicMock(side_effect=logging_side_effect(f'requests.options', after=thrower))
+    mock = MagicMock(
+        side_effect=logging_side_effect('requests.options', after=thrower)
+    )
     monkeypatch.setattr(requests, 'options', mock)
     return mock
 
@@ -63,7 +71,9 @@ def _requests_prevent_options(monkeypatch: MonkeyPatch, thrower: Callable, loggi
 # Autouse to prevent integration tests sneaking into the unit tests
 @pytest.fixture(autouse=True)
 def _requests_prevent_patch(monkeypatch: MonkeyPatch, thrower: Callable, logging_side_effect: Callable) -> MagicMock:
-    mock = MagicMock(side_effect=logging_side_effect(f'requests.patch', after=thrower))
+    mock = MagicMock(
+        side_effect=logging_side_effect('requests.patch', after=thrower)
+    )
     monkeypatch.setattr(requests, 'patch', mock)
     return mock
 
@@ -71,7 +81,9 @@ def _requests_prevent_patch(monkeypatch: MonkeyPatch, thrower: Callable, logging
 # Autouse to prevent integration tests sneaking into the unit tests
 @pytest.fixture(autouse=True)
 def _requests_prevent_put(monkeypatch: MonkeyPatch, thrower: Callable, logging_side_effect: Callable) -> MagicMock:
-    mock = MagicMock(side_effect=logging_side_effect(f'requests.put', after=thrower))
+    mock = MagicMock(
+        side_effect=logging_side_effect('requests.put', after=thrower)
+    )
     monkeypatch.setattr(requests, 'put', mock)
     return mock
 
@@ -79,7 +91,9 @@ def _requests_prevent_put(monkeypatch: MonkeyPatch, thrower: Callable, logging_s
 # Autouse to prevent integration tests sneaking into the unit tests
 @pytest.fixture(autouse=True)
 def _requests_prevent_post(monkeypatch: MonkeyPatch, thrower: Callable, logging_side_effect: Callable) -> MagicMock:
-    mock = MagicMock(side_effect=logging_side_effect(f'requests.post', after=thrower))
+    mock = MagicMock(
+        side_effect=logging_side_effect('requests.post', after=thrower)
+    )
     monkeypatch.setattr(requests, 'post', mock)
     return mock
 

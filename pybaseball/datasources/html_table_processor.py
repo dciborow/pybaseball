@@ -47,9 +47,7 @@ class HTMLTableProcessor:
             for index in range(len(data_rows_dom)):
                 data_rows[index].insert(0, row_id_func(data_rows_dom[index])) # type: ignore
 
-        fg_data = pd.DataFrame(data_rows, columns=headings)
-
-        return fg_data
+        return pd.DataFrame(data_rows, columns=headings)
 
     def get_tabular_data_from_html(self, html: Union[str, bytes], column_name_mapper: ColumnListMapperFunction = None,
                                    known_percentages: Optional[List[str]] = None, row_id_func: RowIdFunction = None,
