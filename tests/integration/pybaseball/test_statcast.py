@@ -35,12 +35,11 @@ def test_statcast_chunking() -> None:
     assert result is not None
     assert not result.empty
 
-    day_results = []
     start_date = date(2019, 5, 1)
 
-    for day in range(15):
-        day_results.append(statcast(str(start_date + timedelta(days=day))))
-
+    day_results = [
+        statcast(str(start_date + timedelta(days=day))) for day in range(15)
+    ]
     day_results_dataframe = pd.concat(day_results, axis=0).convert_dtypes(convert_string=False)
     day_results_dataframe = day_results_dataframe.sort_values(
         ['game_date', 'game_pk', 'at_bat_number', 'pitch_number'],

@@ -60,13 +60,13 @@ class MarcelsProjectionsBase(ABC):
         raise NotImplementedError
 
     def validate_data(self, stats_df: pd.DataFrame) -> None:
-        missing_columns = []
-        for required_column in self.REQUIRED_COLUMNS:
-            if required_column not in stats_df.columns:
-                missing_columns.append(required_column)
-        if missing_columns:
+        if missing_columns := [
+            required_column
+            for required_column in self.REQUIRED_COLUMNS
+            if required_column not in stats_df.columns
+        ]:
             raise ValueError(
-                "the following required columns are missing {}".format(missing_columns)
+                f"the following required columns are missing {missing_columns}"
             )
 
     def compute_playing_time_projection(

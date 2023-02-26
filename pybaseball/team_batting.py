@@ -30,13 +30,13 @@ def team_batting_bref(team: str, start_season: int, end_season: Optional[int]=No
     if end_season is None:
         end_season = start_season
 
-    url = "https://www.baseball-reference.com/teams/{}".format(team)
+    url = f"https://www.baseball-reference.com/teams/{team}"
 
     raw_data = []
     headings: Optional[List[str]] = None
     for season in range(start_season, end_season+1):
-        print("Getting Batting Data: {} {}".format(season, team))
-        stats_url = "{}/{}.shtml".format(url, season)
+        print(f"Getting Batting Data: {season} {team}")
+        stats_url = f"{url}/{season}.shtml"
         response = session.get(stats_url)
         soup = BeautifulSoup(response.content, 'html.parser')
 
@@ -52,7 +52,7 @@ def team_batting_bref(team: str, start_season: int, end_season: Optional[int]=No
             cols = [col.replace('*', '').replace('#', '') for col in cols]  # Removes '*' and '#' from some names
             cols = [col for col in cols if 'Totals' not in col and 'NL teams' not in col and 'AL teams' not in col]  # Removes Team Totals and other rows
             cols.insert(2, season)
-            raw_data.append([ele for ele in cols[0:]])
+            raw_data.append(list(cols[:]))
 
     assert headings is not None
     headings.insert(2, "Year")

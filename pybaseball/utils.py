@@ -146,22 +146,22 @@ def validate_datestring(date_text: Optional[str]) -> date:
 
 @functools.lru_cache()
 def most_recent_season() -> int:
-	'''
+    '''
 	Find the most recent season.
 
 	Will be either this year (if the season has started or just ended)
 	or last year (if the season has not yet started).
 	'''
 
-	# Get the past year of season dates
-	recent_season_dates = date_range(
-		(datetime.today() - timedelta(weeks=52)).date(),  # From one year ago
-		datetime.today().date(),  # To today
-		verbose=False,
-	)
+    	# Get the past year of season dates
+    recent_season_dates = date_range(
+        (datetime.now() - timedelta(weeks=52)).date(),
+        datetime.now().date(),
+        verbose=False,
+    )
 
-	# Grab the last entry as the most recent game date, the year of which is the most recent season
-	return list(recent_season_dates)[-1][0].year
+    # Grab the last entry as the most recent game date, the year of which is the most recent season
+    return list(recent_season_dates)[-1][0].year
 
 
 def date_range(start: date, stop: date, step: int = 1, verbose: bool = True) -> Iterator[Tuple[date, date]]:
@@ -320,7 +320,7 @@ def get_text_file(url: str) -> str:
 
 
 def flag_imputed_data(statcast_df: pd.DataFrame) -> pd.DataFrame:
-	"""Function to flag possibly imputed data as a result of no-nulls approach (see: https://tht.fangraphs.com/43416-2/)
+    """Function to flag possibly imputed data as a result of no-nulls approach (see: https://tht.fangraphs.com/43416-2/)
 	   For derivation of values see pybaseball/EXAMPLES/imputed_derivation.ipynb
 	   Note that this imputation only occured with TrackMan, not present in Hawk-Eye data (beyond 2020)
 	Args:
@@ -329,33 +329,30 @@ def flag_imputed_data(statcast_df: pd.DataFrame) -> pd.DataFrame:
 		pd.DataFrame: Copy of original dataframe with "possible_imputation" flag
 	"""
 
-	ParameterSet = namedtuple('ParameterSet', ["ev", "angle", "bb_type"])
-	impute_combinations = []
+    ParameterSet = namedtuple('ParameterSet', ["ev", "angle", "bb_type"])
+    impute_combinations = [ParameterSet(ev=80.0, angle=69.0, bb_type="popup")]
 
-	# pop-ups
-	impute_combinations.append(ParameterSet(ev=80.0, angle=69.0, bb_type="popup"))
+    # Flyout
+    impute_combinations.append(ParameterSet(ev=89.2, angle=39.0, bb_type="fly_ball"))
+    impute_combinations.append(ParameterSet(ev=102.8, angle=30.0, bb_type="fly_ball"))
 
-	# Flyout
-	impute_combinations.append(ParameterSet(ev=89.2, angle=39.0, bb_type="fly_ball"))
-	impute_combinations.append(ParameterSet(ev=102.8, angle=30.0, bb_type="fly_ball"))
+    # Line Drive
+    impute_combinations.append(ParameterSet(ev=90.4, angle=15.0, bb_type="line_drive"))
+    impute_combinations.append(ParameterSet(ev=91.1, angle=18.0, bb_type="line_drive"))
 
-	# Line Drive
-	impute_combinations.append(ParameterSet(ev=90.4, angle=15.0, bb_type="line_drive"))
-	impute_combinations.append(ParameterSet(ev=91.1, angle=18.0, bb_type="line_drive"))
+    # Ground balls
+    impute_combinations.append(ParameterSet(ev=82.9, angle=-21.0, bb_type="ground_ball"))
+    impute_combinations.append(ParameterSet(ev=90.3, angle=-17.0, bb_type="ground_ball"))
 
-	# Ground balls
-	impute_combinations.append(ParameterSet(ev=82.9, angle=-21.0, bb_type="ground_ball"))
-	impute_combinations.append(ParameterSet(ev=90.3, angle=-17.0, bb_type="ground_ball"))
-
-	df_imputations = pd.DataFrame(data=impute_combinations)
-	df_imputations["possible_imputation"] = True
-	df_return = statcast_df.merge(df_imputations, how="left",
-								  left_on=["launch_speed", "launch_angle", "bb_type"],
-								  right_on=["ev", "angle", "bb_type"])
-	# Change NaNs to false for boolean consistency
-	df_return["possible_imputation"] = df_return["possible_imputation"].fillna(False)
-	df_return = df_return.drop(["ev", "angle"], axis=1)
-	return df_return
+    df_imputations = pd.DataFrame(data=impute_combinations)
+    df_imputations["possible_imputation"] = True
+    df_return = statcast_df.merge(df_imputations, how="left",
+    							  left_on=["launch_speed", "launch_angle", "bb_type"],
+    							  right_on=["ev", "angle", "bb_type"])
+    # Change NaNs to false for boolean consistency
+    df_return["possible_imputation"] = df_return["possible_imputation"].fillna(False)
+    df_return = df_return.drop(["ev", "angle"], axis=1)
+    return df_return
 
 def norm_pitch_code(pitch: str, to_word: bool = False) -> str:
 	normed = pitch_name_to_code_map.get(pitch.upper())

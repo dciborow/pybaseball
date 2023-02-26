@@ -101,7 +101,7 @@ def _get_close_team_matches(lahman_row: pd.Series, fg_data: pd.DataFrame, min_sc
 
     choices: Set[str] = set(fg_data[fg_data['Season'] == lahman_row.yearID]['Team'].values)
 
-    if len(choices) == 0:
+    if not choices:
         return None
 
     scores: Dict[str, List[float]] = {choice: [] for choice in choices}

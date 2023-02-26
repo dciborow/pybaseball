@@ -76,7 +76,7 @@ def get_profile_suite(iterations: int = ITERATIONS) -> List[_ProfileRun]:
 def profile(suite : List[_ProfileRun]):
     for setup, func, iterations in suite:
         setup()
-        [func() for x in range(iterations)]
+        [func() for _ in range(iterations)]
 
 if __name__ == "__main__":
     # Setup profiler

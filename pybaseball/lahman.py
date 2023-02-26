@@ -37,13 +37,14 @@ def download_lahman():
 def _get_file(tablename: str, quotechar: str = "'") -> pd.DataFrame:
     z = get_lahman_zip()
     f = f'{base_string}/{tablename}'
-    data = pd.read_csv(
-        f"{path.join(cache.config.cache_directory, f)}" if z is None else z.open(f),
+    return pd.read_csv(
+        f"{path.join(cache.config.cache_directory, f)}"
+        if z is None
+        else z.open(f),
         header=0,
         sep=',',
-        quotechar=quotechar
+        quotechar=quotechar,
     )
-    return data
 
 
 # do this for every table in the lahman db so they can exist as separate functions

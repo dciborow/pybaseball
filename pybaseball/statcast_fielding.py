@@ -66,8 +66,7 @@ def statcast_catcher_poptime(year: int, min_2b_att: int = 5, min_3b_att: int = 0
 	# currently no 2020 data
 	url = f"https://baseballsavant.mlb.com/leaderboard/poptime?year={year}&team=&min2b={min_2b_att}&min3b={min_3b_att}&csv=true"
 	res = requests.get(url, timeout=None).content
-	data = pd.read_csv(io.StringIO(res.decode('utf-8')))
-	return data
+	return pd.read_csv(io.StringIO(res.decode('utf-8')))
 
 @cache.df_cache()
 def statcast_catcher_framing(year: int, min_called_p: Union[int, str] = "q") -> pd.DataFrame:

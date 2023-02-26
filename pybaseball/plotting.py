@@ -85,10 +85,7 @@ def plot_stadium(team: str, title: Optional[str] = None, width: Optional[int] = 
         axis.add_patch(patch)
 
     if title is None:
-        _title = name
-        if team == 'generic':
-            _title = 'Generic Stadium'
-
+        _title = 'Generic Stadium' if team == 'generic' else name
         plt.title(_title)
     else:
         plt.title(title)

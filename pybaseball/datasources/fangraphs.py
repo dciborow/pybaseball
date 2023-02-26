@@ -23,8 +23,11 @@ def extract_id_from_row(fg_row: lxml.etree.Element, param_name: str) -> Optional
             href = anchor_tag.get('href')
             if href and '?' in href:
                 qs_params = href.split('?')[1].split('&')
-                values = [qs_param.split('=')[1] for qs_param in qs_params if qs_param.split('=')[0].lower() == param_name]
-                if values:
+                if values := [
+                    qs_param.split('=')[1]
+                    for qs_param in qs_params
+                    if qs_param.split('=')[0].lower() == param_name
+                ]:
                     return int(values[0])
     except:
         pass
@@ -65,10 +68,11 @@ class FangraphsDataTable(ABC):
 
     def _sort(self, data: pd.DataFrame, columns: List[str], ascending: bool = True) -> pd.DataFrame:
         known_columns = [x for x in columns if x in data.columns]
-        if known_columns == []:
-            return data
-
-        return data.sort_values(columns, ascending=ascending)
+        return (
+            data.sort_values(columns, ascending=ascending)
+            if known_columns
+            else data
+        )
 
     def _validate(self, data: pd.DataFrame) -> pd.DataFrame:
         return data

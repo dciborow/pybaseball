@@ -26,9 +26,7 @@ def statcast_pitcher(start_dt: Optional[str] = None, end_dt: Optional[str] = Non
     assert player_id
 
     url = 'https://baseballsavant.mlb.com/statcast_search/csv?all=true&hfPT=&hfAB=&hfBBT=&hfPR=&hfZ=&stadium=&hfBBL=&hfNewZones=&hfGT=R%7CPO%7CS%7C=&hfSea=&hfSit=&player_type=pitcher&hfOuts=&opponent=&pitcher_throws=&batter_stands=&hfSA=&game_date_gt={}&game_date_lt={}&pitchers_lookup%5B%5D={}&team=&position=&hfRO=&home_road=&hfFlag=&metric_1=&hfInn=&min_pitches=0&min_results=0&group_by=name&sort_col=pitches&player_event_sort=h_launch_speed&sort_order=desc&min_abs=0&type=details&'
-    df = split_request(start_dt, end_dt, player_id, url)
-
-    return df
+    return split_request(start_dt, end_dt, player_id, url)
 
 @cache.df_cache()
 def statcast_pitcher_exitvelo_barrels(year: int, minBBE: Union[int, str] = "q") -> pd.DataFrame:
